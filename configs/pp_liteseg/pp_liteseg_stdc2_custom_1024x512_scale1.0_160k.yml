@@ -1,0 +1,60 @@
+_base_: './pp_liteseg_stdc1_cityscapes_1024x512_scale0.5_160k.yml'
+
+batch_size: 4  # total: 4*4
+
+loss:
+  types:
+    - type: OhemCrossEntropyLoss
+      min_kept: 130000   # batch_size * 1024 * 512 // 16
+    - type: OhemCrossEntropyLoss
+      min_kept: 130000
+    - type: OhemCrossEntropyLoss
+      min_kept: 130000
+    # - type: MixedLoss
+    #   losses:
+    #     - type: CrossEntropyLoss
+    #       # weight: [0.3,0.3,0.3,0.1]
+    #     - type: LovaszSoftmaxLoss
+    #   coef: [0.8,0.2]
+  coef: [1, 1, 1]
+
+train_dataset:
+  type: Dataset
+  dataset_root: data/custom
+  num_classes: 4
+  transforms:
+    - type: ResizeStepScaling
+      min_scale_factor: 0.5
+      max_scale_factor: 2.0
+      scale_step_size: 0.25
+    - type: RandomPaddingCrop
+      crop_size: [1024, 512]
+    # - type: RandomHorizontalFlip
+    - type: RandomVerticalFlip
+    - type: RandomDistort
+      brightness_range: 0.5
+      contrast_range: 0.5
+      saturation_range: 0.5
+    - type: Normalize
+  mode: train
+  train_path: data/custom/train.txt
+
+val_dataset:
+  type: Dataset
+  num_classes: 4
+  dataset_root: data/custom
+  transforms:
+    - type: Normalize
+  mode: val
+  val_path: data/custom/val.txt
+
+test_config:
+  aug_eval: True
+  scales: 1.0
+
+model:
+  _inherited_: False
+  type: PPLiteSeg
+  backbone:
+    type: STDC2
+    pretrained: https://bj.bcebos.com/paddleseg/dygraph/PP_STDCNet2.tar.gz

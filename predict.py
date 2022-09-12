@@ -28,25 +28,29 @@ def parse_args():
 
     # params of prediction
     parser.add_argument(
-        "--config", dest="cfg", help="The config file.", default=None, type=str)
+        "--config", 
+        dest="cfg", 
+        help="The config file.", 
+        type=str, 
+        default="configs/fcn/fcn_hrnetw18_custom_1024x512_80k.yml")
     parser.add_argument(
         '--model_path',
         dest='model_path',
         help='The path of model for prediction',
         type=str,
-        default=None)
+        default="out/train/custom_dataset/fcn_hrnetw18/best_model/model.pdparams")
     parser.add_argument(
         '--image_path',
         dest='image_path',
         help='The image to predict, which can be a path of image, or a file list containing image paths, or a directory including images',
         type=str,
-        default=None)
+        default="data/custom_mini/images/20220727_155256893.jpg")
     parser.add_argument(
         '--save_dir',
         dest='save_dir',
         help='The directory for saving the predicted results',
         type=str,
-        default='./output/result')
+        default='out/detect')
 
     # augment for prediction
     parser.add_argument(

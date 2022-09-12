@@ -1,6 +1,6 @@
 _base_: '../_base_/cityscapes.yml'
 
-batch_size: 4
+batch_size: 16
 iters: 160000
 
 model:
